@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default function getStars(num = 1000) {
+export default function getStars(num = 5000) {
     const verts = [];
     const colors = [];
 

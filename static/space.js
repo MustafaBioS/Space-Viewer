@@ -16,6 +16,11 @@ const scene = new THREE.Scene();
 const loader = new THREE.TextureLoader();
 
 
+// Stars
+
+const stars = getStars();
+scene.add(stars);
+
 // Sun
 
 const sunGeo = new THREE.IcosahedronGeometry(1, 12);
@@ -58,20 +63,15 @@ scene.add(venGroup);
 const venMesh = new THREE.Mesh(venGeo, venMat);
 venGroup.add(venMesh);
 
-// Moon
-
-const moonGeo = new THREE.IcosahedronGeometry(1, 12);
-const moonMat = new THREE.MeshBasicMaterial({
-    map: loader.load("static/maps/moon/8k_moon.jpg")
+const venAtmoMat = new THREE.MeshBasicMaterial({
+    map: loader.load("static/maps/venus/4k_venus_atmosphere.jpg"),
+    transparent: true,
+    opacity: 0.4,
+    depthWrite: false
 })
 
-const moonGroup = new THREE.Group();
-scene.add(moonGroup);
-
-const moonMesh = new THREE.Mesh(moonGeo, moonMat);
-moonGroup.add(moonMesh);
-
-moonGroup.scale.setScalar(0.5)
+const venAtmoMesh = new THREE.Mesh(venGeo, venAtmoMat);
+venGroup.add(venAtmoMesh);
 
 // Earth
 
@@ -112,19 +112,136 @@ const atmoMat = new THREE.MeshPhongMaterial({
     color: 0x00aaff,
     side: THREE.BackSide,
     opacity: 0.1,
+    transparent: true
 });
 const atmoGeo = new THREE.SphereGeometry(1.02, 64, 64);
 const atmosphere = new THREE.Mesh(atmoGeo, atmoMat);
 earthGroup.add(atmosphere);
 
-const stars = getStars();
-scene.add(stars);
+// Moon
 
+const moonGeo = new THREE.IcosahedronGeometry(1, 12);
+const moonMat = new THREE.MeshBasicMaterial({
+    map: loader.load("static/maps/moon/8k_moon.jpg")
+})
+
+const moonGroup = new THREE.Group();
+scene.add(moonGroup);
+
+const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+moonGroup.add(moonMesh);
+
+moonGroup.scale.setScalar(0.5)
+
+// Mars
+
+const marsGeo = new THREE.IcosahedronGeometry(1, 12);
+const marsMat = new THREE.MeshBasicMaterial({
+    map: loader.load('static/maps/mars/8k_mars.jpg')
+})
+
+const marsGroup = new THREE.Group();
+scene.add(marsGroup);
+
+const marsMesh = new THREE.Mesh(marsGeo, marsMat);
+marsGroup.add(marsMesh)
+
+
+// Jupiter
+
+const jupGeo = new THREE.IcosahedronGeometry(1, 12);
+const jupMat = new THREE.MeshBasicMaterial({
+    map: loader.load('static/maps/jupiter/8k_jupiter.jpg')
+})
+
+const jupGroup = new THREE.Group();
+scene.add(jupGroup);
+
+const jupMesh = new THREE.Mesh(jupGeo, jupMat);
+jupGroup.add(jupMesh);
+
+// Saturn
+const satGeo = new THREE.IcosahedronGeometry(1, 12);
+const satMat = new THREE.MeshBasicMaterial({
+    map: loader.load('static/maps/saturn/8k_saturn.jpg')
+})
+
+const satGroup = new THREE.Group();
+scene.add(satGroup);
+
+const satMesh = new THREE.Mesh(satGeo, satMat);
+satGroup.add(satMesh);
+
+function ring(inner, outer, texture) {
+    const geometry = new THREE.RingGeometry(inner, outer, 128);
+
+    const uv = geometry.attributes.uv;
+    const pos = geometry.attributes.position;
+
+    for (let i = 0; i < uv.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let radius = Math.sqrt(x * x + y * y);
+
+        let u = (radius - inner) / (outer - inner);
+        let v = (Math.atan2(y, x) + Math.PI) / (2 * Math.PI);
+
+        uv.setXY(i, u, v);
+    }
+
+    geometry.attributes.uv.needsUpdate = true;
+
+    return new THREE.Mesh(
+        geometry,
+        new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
+            transparent: true,
+        })
+    );
+}
+
+const ringTex = loader.load("static/maps/saturn/8k_saturn_ring_alpha.png");
+const ringMesh = ring(1.2, 2.2, ringTex);
+
+ringMesh.rotation.x = Math.PI / 2;
+satGroup.add(ringMesh);
+
+// Uranus
+
+const urGeo = new THREE.IcosahedronGeometry(1, 12);
+const urMat = new THREE.MeshBasicMaterial({
+    map: loader.load("static/maps/uranus/2k_uranus.jpg")
+})
+
+const urGroup = new THREE.Group();
+scene.add(urGroup)
+
+const urMesh = new THREE.Mesh(urGeo, urMat);
+urGroup.add(urMesh);
+
+// Neptune
+
+const nepGeo = new THREE.IcosahedronGeometry(1, 12);
+const nepMat = new THREE.MeshBasicMaterial({
+    map: loader.load("static/maps/neptune/2k_neptune.jpg")
+})
+
+const nepGroup = new THREE.Group();
+scene.add(nepGroup);
+
+const nepMesh = new THREE.Mesh(nepGeo, nepMat);
+nepGroup.add(nepMesh);
 
 // Positions
 
-mercGroup.position.x = 4
-venGroup.position.x = 7
+nepGroup.position.x = 28;
+urGroup.position.x = 25;
+satGroup.position.x = 22;
+jupGroup.position.x = 18;
+marsGroup.position.x = 15;
+mercGroup.position.x = 4;
+venGroup.position.x = 7;
 moonGroup.position.x = 13;
 earthGroup.position.x = 10;
 
