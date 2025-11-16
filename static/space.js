@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
+import getStars from "./stars.js";
 
 const h = window.innerHeight;
 const w = window.innerWidth;
@@ -23,11 +24,21 @@ earthGroup.rotation.z = -23.4 * Math.PI / 180;
 scene.add(earthGroup)
 
 const earthMesh = new THREE.Mesh(geometry, material);
+earthGroup.add(earthMesh);
 
-scene.add(earthMesh);
+const lightMat = new THREE.MeshBasicMaterial({ 
+    map: loader.load("static/maps/earthlights1k.jpg"),
+    blending: THREE.AdditiveBlending,
+})
+const lightMesh = new THREE.Mesh(geometry, lightMat)
+earthGroup.add(lightMesh);
 
-const hemilight = new THREE.HemisphereLight(0xffffff, 0x444444);
-scene.add(hemilight)
+const stars = getStars();
+scene.add(stars);
+
+const sunLight = new THREE.DirectionalLight(0xffffff);
+sunLight.position.set(-2, 0.5, 1.5);
+scene.add(sunLight);
 
 const controls = new OrbitControls(cam, renderer.domElement);
 
@@ -35,6 +46,7 @@ function animate() {
     requestAnimationFrame(animate);
     
     earthMesh.rotation.y += 0.002;
+    lightMesh.rotation.y += 0.002;
     renderer.render(scene, cam);
 }
 animate();
