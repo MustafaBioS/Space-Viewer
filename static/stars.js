@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
-export default function getStars(num = 5000) {
+export default function getStars(num = 12500) {
     const verts = [];
     const colors = [];
 
     for (let i = 0; i < num; i++) {
-        const radius = Math.random() * 25 + 25;
+        const radius = Math.random() * 50 + 50;
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos((Math.random() * 2) - 1);
 

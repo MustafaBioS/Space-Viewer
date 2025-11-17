@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Viewer - Space</title>
     <link rel="icon" href="../static/pngimg.com - earth_PNG25.png">
-    <style>
-      body {
-        margin: 0;
-
-      }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script type="importmap">
 			{
 				"imports": {
@@ -22,6 +17,13 @@
   </head>
 
   <body>
+
+    <div class="container">
+      <div class="bg">
+        <button class="start">Start</button>
+      </div>
+    </div>
+
     <script type="module" src="../static/space.js"></script>
   </body>
 </html>

@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
 import getStars from "./stars.js";
 
+const start = document.querySelector('.start');
+
 const h = window.innerHeight;
 const w = window.innerWidth;
 
@@ -34,7 +36,7 @@ scene.add(sunGroup)
 const sunMesh = new THREE.Mesh(sunGeo, sunMat);
 sunGroup.add(sunMesh);
 
-sunGroup.scale.setScalar(1.5)
+sunGroup.scale.setScalar(2);
 
 // Mercury
 
@@ -48,6 +50,8 @@ scene.add(mercGroup);
 
 const mercMesh = new THREE.Mesh(mercGeo, mercMat);
 mercGroup.add(mercMesh);
+
+mercGroup.scale.setScalar(0.76);
 
 
 // Venus
@@ -72,6 +76,8 @@ const venAtmoMat = new THREE.MeshBasicMaterial({
 
 const venAtmoMesh = new THREE.Mesh(venGeo, venAtmoMat);
 venGroup.add(venAtmoMesh);
+
+venGroup.scale.setScalar(1.9);
 
 // Earth
 
@@ -118,6 +124,8 @@ const atmoGeo = new THREE.SphereGeometry(1.02, 64, 64);
 const atmosphere = new THREE.Mesh(atmoGeo, atmoMat);
 earthGroup.add(atmosphere);
 
+earthGroup.scale.setScalar(2);
+
 // Moon
 
 const moonGeo = new THREE.IcosahedronGeometry(1, 12);
@@ -131,7 +139,7 @@ scene.add(moonGroup);
 const moonMesh = new THREE.Mesh(moonGeo, moonMat);
 moonGroup.add(moonMesh);
 
-moonGroup.scale.setScalar(0.5)
+moonGroup.scale.setScalar(0.54)
 
 // Mars
 
@@ -146,6 +154,7 @@ scene.add(marsGroup);
 const marsMesh = new THREE.Mesh(marsGeo, marsMat);
 marsGroup.add(marsMesh)
 
+marsGroup.scale.setScalar(1.06);
 
 // Jupiter
 
@@ -159,6 +168,8 @@ scene.add(jupGroup);
 
 const jupMesh = new THREE.Mesh(jupGeo, jupMat);
 jupGroup.add(jupMesh);
+
+jupGroup.scale.setScalar(5);
 
 // Saturn
 const satGeo = new THREE.IcosahedronGeometry(1, 12);
@@ -207,6 +218,8 @@ const ringMesh = ring(1.2, 2.2, ringTex);
 ringMesh.rotation.x = Math.PI / 2;
 satGroup.add(ringMesh);
 
+satGroup.scale.setScalar(4);
+
 // Uranus
 
 const urGeo = new THREE.IcosahedronGeometry(1, 12);
@@ -219,6 +232,8 @@ scene.add(urGroup)
 
 const urMesh = new THREE.Mesh(urGeo, urMat);
 urGroup.add(urMesh);
+
+urGroup.scale.setScalar(3);
 
 // Neptune
 
@@ -233,26 +248,138 @@ scene.add(nepGroup);
 const nepMesh = new THREE.Mesh(nepGeo, nepMat);
 nepGroup.add(nepMesh);
 
+nepGroup.scale.setScalar(2.8)
+
 // Positions
 
-nepGroup.position.x = 28;
-urGroup.position.x = 25;
-satGroup.position.x = 22;
-jupGroup.position.x = 18;
-marsGroup.position.x = 15;
+nepGroup.position.x = 62;
+urGroup.position.x = 54;
+satGroup.position.x = 42;
+jupGroup.position.x = 27;
+marsGroup.position.x = 20;
+moonGroup.position.x = 20;
+earthGroup.position.x = 13.5;
+venGroup.position.x = 8;
 mercGroup.position.x = 4;
-venGroup.position.x = 7;
-moonGroup.position.x = 13;
-earthGroup.position.x = 10;
+
+
+// Pivots
+
+const mercPivot = new THREE.Group();
+scene.add(mercPivot);
+mercPivot.add(mercGroup);
+
+const venPivot = new THREE.Group();
+scene.add(venPivot);
+venPivot.add(venGroup);
+
+const earthPivot = new THREE.Group();
+scene.add(earthPivot);
+earthPivot.add(earthGroup);
+
+const moonPivot = new THREE.Group();
+earthGroup.add(moonPivot);
+moonPivot.add(moonGroup);
+moonGroup.position.set(1.7, 0, 0);
+
+const marsPivot = new THREE.Group();
+scene.add(marsPivot);
+marsPivot.add(marsGroup);
+
+const jupPivot = new THREE.Group();
+scene.add(jupPivot);
+jupPivot.add(jupGroup);
+
+const satPivot = new THREE.Group();
+scene.add(satPivot);
+satPivot.add(satGroup);
+
+const urPivot = new THREE.Group();
+scene.add(urPivot);
+urPivot.add(urGroup);
+
+const nepPivot = new THREE.Group();
+scene.add(nepPivot);
+nepPivot.add(nepGroup);
+
+
+// Orbits
+
+function createOrbit(radius) {
+    const segments = 128;
+    const geometry = new THREE.RingGeometry(radius - 0.01, radius + 0.01, segments);
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.5,
+    });
+    const ring = new THREE.Mesh(geometry, material);
+    ring.rotation.x = Math.PI / 2;
+    return ring;
+}
+
+scene.add(createOrbit(4));
+scene.add(createOrbit(8));
+scene.add(createOrbit(13.5));
+scene.add(createOrbit(20));
+scene.add(createOrbit(27));
+scene.add(createOrbit(42));
+scene.add(createOrbit(54));
+scene.add(createOrbit(62));
+
 
 const controls = new OrbitControls(cam, renderer.domElement);
+
+function move() {
+
+    // Around The Sun
+    
+    mercPivot.rotation.y += 0.004;
+    venPivot.rotation.y += 0.0016;
+    earthPivot.rotation.y += 0.001;
+    moonPivot.rotation.y += 0.01;
+    marsPivot.rotation.y += 0.0008;
+    jupPivot.rotation.y += 0.0002;
+    satPivot.rotation.y += 0.00009;
+    urPivot.rotation.y += 0.00004;
+    nepPivot.rotation.y += 0.00002;
+}
+
+var moving = false;
+
+start.addEventListener('click', ()=> {
+    if (!moving) {
+        moving = true;
+    } else if (moving) {
+        moving = false;  
+    }
+})
 
 function animate() {
     requestAnimationFrame(animate);
     
+    // Around Itself
+
+    nepGroup.rotation.y += 0.00298;
+    urGroup.rotation.y += -0.00278;
+    satGroup.rotation.y += 0.00444;
+    jupGroup.rotation.y += 0.00488;
+    marsGroup.rotation.y += 0.00194;
+    moonGroup.rotation.y += 0.000074;
+
     earthMesh.rotation.y += 0.002;
     lightMesh.rotation.y += 0.002;
     cloudsMesh.rotation.y += 0.0025;
+
+    venGroup.rotation.y = -0.00008;
+    mercGroup.rotation.y += 0.00034;
+    sunGroup.rotation.y += 0.002;
+
+    if (moving) {
+        move();
+    }
+
 
     renderer.render(scene, cam);
 }
